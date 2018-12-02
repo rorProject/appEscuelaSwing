@@ -226,6 +226,15 @@ public class CapturaHuella extends javax.swing.JFrame {
                     BtnGuardar.setEnable(true);
                     BtnGuardar.grabFocus();
                         break;
+                            
+                        case TEMPLATE_STATUS_FAILED: 
+                            Reclutador.clear();
+                            stop();
+                            EstadoHuellas();
+                            setTemplate(null);
+                            JOptionPane.showMessageDialog(Captura_Huella.this, "La Plantilla de la Huella no puede ser creada. Repita la operacion");
+                            start();
+                                break;
                     }
                 }
                 
