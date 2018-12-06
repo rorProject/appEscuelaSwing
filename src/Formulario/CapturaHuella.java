@@ -28,6 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import Formulario.CapturaHuella;
 
 /**
  *
@@ -35,6 +36,8 @@ import javax.swing.UIManager;
  */
 
 public class CapturaHuella extends javax.swing.JFrame {
+
+    
 
     /**
      * Nuevo Form CapturaHuella
@@ -145,46 +148,48 @@ public class CapturaHuella extends javax.swing.JFrame {
                                 DPFPFeatureExtraction extractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
             try {
                 return extractor.createFeatureSet(sample, purpose);
-            }   catch(DPFPImageQualityException e){
+            }catch(DPFPImageQualityException e){
                 return null;
+            }
         }
-    }
-                    public Image CrearImagenHuella(DPFPSample sample){
-                        return DPFPGlobal.getSampleConversionFactory().createImage(sample);
+            public Image CrearImagenHuella(DPFPSample sample){
+                return DPFPGlobal.getSampleConversionFactory().createImage(sample);
+                }
+                    
+            public void DibujarHuella(Image image){
+                LabelHuella.setIcon(new ImageIcon(image.getScaledInstance(LabelHuella.getWidth(),
+                        LabelHuella.getHeight(),
+                        image.SCALE_DEFAULT)));
+                    repaint();
                     }
                     
-                    public void DibujarHuella(Image image){
-                        LabelHuella.setIcon(new ImageIcon(image.getScaledInstance(LabelHuella.getWidth(),LabelHuella.getHeight(),image.SCALE_DEFAULT)));
-                            repaint();
-                    }
+            public void EstadoHuellas(){
+                EnviarTexto("Muestra de Huellas Necesarias para Guardar Template" + Reclutador.getFeaturesNeeded());
+                }
                     
-                    public void EstadoHuellas(){
-                        EnviarTexto("Muestra de Huellas Necesarias para Guardar Template" + Reclutador.getFeaturesNeeded());
-                    }
-                    
-                    public void EnviarTexto(String string){
-                        txtArea.append(string + "/n");
-                    }
+            public void EnviarTexto(String string){
+                txtArea.append(string + "/n");
+                }
     
-                    public void start(){
-                        Lector.startCapture();
-                        EnviarTexto("Utilizando el Lector de Huella Dactilar");
+            public void start(){
+                Lector.startCapture();
+                    EnviarTexto("Utilizando el Lector de Huella Dactilar");
                     }
                     
-                    public void stop(){
-                        Lector.stopCapture();
-                        EnviarTexto("No se está Usando el Lector de Huella Dactilar");
+            public void stop(){
+                Lector.stopCapture();
+                    EnviarTexto("No se está Usando el Lector de Huella Dactilar");
                     }
                     
-                    public DPFPTemplate getTemplate(){
-                        return template;
-                    }
+            public DPFPTemplate getTemplate(){
+                return template;
+                }
                     
-                    public void setTemplate(DPFPTemplate template){
-                        DPFPTemplate old = this.template;
-                        this.template = template;
-                        firePropertyChange(TEMPLATE_PROPERTY, old, template);
-                    }
+            public void setTemplate(DPFPTemplate template){
+                DPFPTemplate old = this.template;
+                this.template = template;
+                firePropertyChange(TEMPLATE_PROPERTY, old, template);
+                }
    
                     public void ProcesarCaptura(DPFPSample sample){
                     //Procesar la muestra de huella y crear conjunto de caracteristicas para inscripcion
@@ -193,47 +198,45 @@ public class CapturaHuella extends javax.swing.JFrame {
                     //Procesar la muestra de huella y crear conjunto de caracteristicas para verificacion
                         featuresverificacion = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION);  
                     
-            //Comprobar la calidad de la muestra de la huella y lo añade al reclutador si es bueno
-            if(featuresinscripcion !=null){
-                try{
-                    System.out.println("Las Caracteristicas de la Huella se han Creado");
-                    //Agrega las caracteristicas de la Huella a la Plantilla a Crear
-                    Reclutador.addFeatures(featuresinscripcion);
+                    //Comprobar la calidad de la muestra de la huella y lo añade al reclutador si es bueno
+                        if(featuresinscripcion !=null){
+                            try{
+                                System.out.println("Las Caracteristicas de la Huella se han Creado");
+                                //Agrega las caracteristicas de la Huella a la Plantilla a Crear
+                                Reclutador.addFeatures(featuresinscripcion);
                     
-                    //Dibuja la Huella Capturada
-                    Image image = CrearImagenHuella(sample);
-                    DibujarHuella(image);
+                                //Dibuja la Huella Capturada
+                                Image image = CrearImagenHuella(sample);
+                                DibujarHuella(image);
                     
-                    BtnVerificar.setEnable(true);
-                    BtnIdentificar.setEnable(true);
+                                BtnVerificar.setEnable(true);
+                                BtnIdentificar.setEnable(true);
                     
-                }catch{
-                    (DPFPImageQualityException ex){
-                        System.err.println("Error: " + ex.getMessage());
-                    }
-                }finally{
-                    EstadoHuellas();
-                    //Comprubea si la plantilla se creo
-                    switch(Reclutador.getTemplateStatus()){
+                            }catch(DPFPImageQualityException ex){
+                                System.err.println("Error: " + ex.getMessage());
+                            }finally{
+                                EstadoHuellas();
+                                //Comprubea si la plantilla se creo
+                        switch(Reclutador.getTemplateStatus()){
                         
                         case TEMPLATE_STATUS_READY: //informe de exito 
                             stop();
                             setTemplate(Reclutador.getTemplate());
                                 EnviarTexto("La plantilla de la huella ha sido creada, ya puede verificar e identificarla);");
                     
-                    BtnIdentificar.setEnable(false);
-                    BtnVerificar.setEnable(false);
-                    BtnGuardar.setEnable(true);
-                    BtnGuardar.grabFocus();
-                        break;
+                                BtnIdentificar.setEnable(false);
+                                BtnVerificar.setEnable(false);
+                                BtnGuardar.setEnable(true);
+                                BtnGuardar.grabFocus();
+                                break;
                             
                         case TEMPLATE_STATUS_FAILED: 
-                            Reclutador.clear();
-                            stop();
-                            EstadoHuellas();
-                            setTemplate(null);
-                            JOptionPane.showMessageDialog(Captura_Huella.this, "La Plantilla de la Huella no puede ser creada. Repita la operacion");
-                            start();
+                                Reclutador.clear();
+                                stop();
+                                EstadoHuellas();
+                                setTemplate(null);
+                                JOptionPane.showMessageDialog(CapturaHuella.this, "La Plantilla de la Huella no puede ser creada. Repita la operacion");
+                                start();
                                 break;
                     }
                 }
@@ -244,7 +247,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                     
             
             
-}
+
                     
     /**
      * 
@@ -256,7 +259,6 @@ public class CapturaHuella extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
         panelHuella = new javax.swing.JPanel();
         LabelHuella = new javax.swing.JLabel();
         PanelOpc = new javax.swing.JPanel();
@@ -266,8 +268,6 @@ public class CapturaHuella extends javax.swing.JFrame {
         BtnSalir = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new javax.swing.JTextArea();
-
-        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -337,12 +337,13 @@ public class CapturaHuella extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(PanelOpc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -401,7 +402,6 @@ public class CapturaHuella extends javax.swing.JFrame {
     private javax.swing.JButton BtnVerificar;
     private javax.swing.JLabel LabelHuella;
     private javax.swing.JPanel PanelOpc;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelHuella;
     private javax.swing.JTextArea txtArea;
