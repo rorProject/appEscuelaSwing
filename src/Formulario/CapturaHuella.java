@@ -28,7 +28,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import Formulario.CapturaHuella;
 
 /**
  *
@@ -209,8 +208,8 @@ public class CapturaHuella extends javax.swing.JFrame {
                                 Image image = CrearImagenHuella(sample);
                                 DibujarHuella(image);
                     
-                                BtnVerificar.setEnable(true);
-                                BtnIdentificar.setEnable(true);
+                                BtnVerificar.setEnabled(true);
+                                BtnIdentificar.setEnabled(true);
                     
                             }catch(DPFPImageQualityException ex){
                                 System.err.println("Error: " + ex.getMessage());
@@ -224,9 +223,9 @@ public class CapturaHuella extends javax.swing.JFrame {
                             setTemplate(Reclutador.getTemplate());
                                 EnviarTexto("La plantilla de la huella ha sido creada, ya puede verificar e identificarla);");
                     
-                                BtnIdentificar.setEnable(false);
-                                BtnVerificar.setEnable(false);
-                                BtnGuardar.setEnable(true);
+                                BtnIdentificar.setEnabled(false);
+                                BtnVerificar.setEnabled(false);
+                                BtnGuardar.setEnabled(true);
                                 BtnGuardar.grabFocus();
                                 break;
                             
@@ -242,6 +241,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                 }
                 
             }
+                       
                     
                     }
                     
@@ -389,7 +389,7 @@ public class CapturaHuella extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            @Override public void run() {
                 new CapturaHuella().setVisible(true);
             }
         });
