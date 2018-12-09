@@ -46,10 +46,15 @@ public class ConexionBDD {
             JOptionPane.showMessageDialog(null,"Se produjo un error: "+e.getMessage());
         }
         catch(NullPointerException e){
-            JOptionPane.showMessageDialog(null,"Se produo un error: "+e.getMessage());
+            JOptionPane.showMessageDialog(null,"Se produjo un error: "+e.getMessage());
         }finally{
             return conn;
         } 
+    }
+    public void desconectar(){
+        conn = null;
+        System.out.println("Desconexion a base de datos listo..");
+         
     }
     
 }
