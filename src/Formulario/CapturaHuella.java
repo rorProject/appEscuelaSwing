@@ -94,7 +94,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                     EnviarTexto("El sensor de huella digital esta conectado");
                     }
 
-                    private void EnviarTexto(String el_sensor_de_huella_digital_esta_conectad) {
+                    private void EnviarTexto(String string) {
                       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 }
                 });
@@ -102,10 +102,10 @@ public class CapturaHuella extends javax.swing.JFrame {
           @Override public void readerDisconnected(final DPFPReaderStatusEvent e){
             SwingUtilities.invokeLater(new Runnable(){
                 @Override public void run(){
-                    EnviarTexto("El sensor de huella digital esta desconectado");
+                    EnviarTexto("El sensor de huella digital esta desconectado /n");
                     }
 
-                    private void EnviarTexto(String el_sensor_de_huella_digital_esta_desconec) {
+                    private void EnviarTexto(String string) {
                         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 }
                 });
@@ -118,7 +118,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                         EnviarTexto("El dedo ha sido colocado sobre el lector de huella");
                     }
 
-                    private void EnviarTexto(String el_dedo_ha_sido_colocado_sobre_el_lector_) {
+                    private void EnviarTexto(String string) {
                         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                     }
                 });
@@ -130,7 +130,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                         EnviarTexto("El dedo ha sido quitado del lector de huella");
                     }
 
-                    private void EnviarTexto(String el_dedo_ha_sido_quitado_del_lector_de_hue) {
+                    private void EnviarTexto(String string) {
                         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                     }
                 });
@@ -172,7 +172,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                     }
                     
             public void EstadoHuellas(){
-                EnviarTexto("Muestra de Huellas Necesarias para Guardar Template" + Reclutador.getFeaturesNeeded());
+                EnviarTexto("Muestra de Huellas Necesarias para Guardar Template " + Reclutador.getFeaturesNeeded());
                 }
                     
             public void EnviarTexto(String string){
