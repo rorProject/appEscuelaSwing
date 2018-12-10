@@ -33,6 +33,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -74,14 +75,6 @@ public class CapturaHuella extends javax.swing.JFrame {
                         ProcesarCaptura(e.getSample());
                         }
 
-                    private void EnviarTexto(String la_huella_digital_ha_sido_Capturada) {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                    }
-
-                    private void ProcesarCaptura(DPFPSample sample) {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                    }
-
                     });
                 }
             }
@@ -93,21 +86,13 @@ public class CapturaHuella extends javax.swing.JFrame {
                 @Override public void run(){
                     EnviarTexto("El sensor de huella digital esta conectado");
                     }
-
-                    private void EnviarTexto(String string) {
-                      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                }
                 });
             }
           @Override public void readerDisconnected(final DPFPReaderStatusEvent e){
             SwingUtilities.invokeLater(new Runnable(){
                 @Override public void run(){
-                    EnviarTexto("El sensor de huella digital esta desconectado /n");
+                    EnviarTexto("El sensor de huella digital esta desconectado");
                     }
-
-                    private void EnviarTexto(String string) {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                }
                 });
             }
         });
@@ -117,10 +102,6 @@ public class CapturaHuella extends javax.swing.JFrame {
                     @Override public void run(){
                         EnviarTexto("El dedo ha sido colocado sobre el lector de huella");
                     }
-
-                    private void EnviarTexto(String string) {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                    }
                 });
                 
             }
@@ -128,10 +109,6 @@ public class CapturaHuella extends javax.swing.JFrame {
                 SwingUtilities.invokeLater(new Runnable(){
                     @Override public void run(){
                         EnviarTexto("El dedo ha sido quitado del lector de huella");
-                    }
-
-                    private void EnviarTexto(String string) {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                     }
                 });
             }
@@ -141,10 +118,6 @@ public class CapturaHuella extends javax.swing.JFrame {
                         SwingUtilities.invokeLater(new Runnable(){
           @Override public void run(){
                         EnviarTexto("Error: " + e.getError());
-                    }
-
-                    private void EnviarTexto(String string) {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                     }
                 });
             }
@@ -174,10 +147,6 @@ public class CapturaHuella extends javax.swing.JFrame {
             public void EstadoHuellas(){
                 EnviarTexto("Muestra de Huellas Necesarias para Guardar Template " + Reclutador.getFeaturesNeeded());
                 }
-                    
-            public void EnviarTexto(String string){
-                txtArea.append(string + "/n");
-                }
     
             public void start(){
                 Lector.startCapture();
@@ -188,7 +157,11 @@ public class CapturaHuella extends javax.swing.JFrame {
                 Lector.stopCapture();
                     EnviarTexto("No se está Usando el Lector de Huella Dactilar");
                     }
-                    
+            
+            public void EnviarTexto(String string){
+                txtArea.append(string + "\n");
+                }
+            
             public DPFPTemplate getTemplate(){
                 return template;
                 }
@@ -273,7 +246,7 @@ ConexionBDD conn = new ConexionBDD();
             BtnVerificar.grabFocus();
         } catch(SQLException ex){
             //indica error en la consola
-            System.err.println("Error al guardar los datos de la Huella");
+            System.err.println("Error al guardar los datos de la Huella" + ex);
             
         } finally{
             conn.desconectar();
@@ -307,8 +280,8 @@ ConexionBDD conn = new ConexionBDD();
                 JOptionPane.showConfirmDialog(null, "No existe un registro de huella para "+nom, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
                 }
             
-    }catch(SQLException e){
-        System.err.println("Error al verificar los datos de la huella");
+    }catch(SQLException ex){
+        System.err.println("Error al verificar los datos de la huella" + ex.getMessage());
         
     }finally{
             conn.desconectar();
