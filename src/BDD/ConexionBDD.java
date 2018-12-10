@@ -21,18 +21,18 @@ public class ConexionBDD {
     
     */
     
-    public String puerto="80";
+    public String puerto="3306";
     public String nomservidor="localhost";
-    public String db="huella";
+    public String db="app_huella";
     public String user="root";
-    public String pass="root";
+    public String pass="";
         Connection conn=null;
     public Connection conectar(){
         try{
-            String ruta="";
-            String servidor="";
-            Class.forName(servidor);
-            conn = DriverManager.getConnection(ruta+servidor+db,user,pass);
+            String ruta="jdbc:mysql://";
+            String servidor= nomservidor+":"+puerto+"/";
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(ruta+servidor+db+"?userTimezone=true&serverTimezone=UTC",user,pass);
             if(conn !=null){
                 System.out.println("conexion de base de datos.");
             }else if(conn==null){

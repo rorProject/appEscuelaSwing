@@ -259,7 +259,7 @@ ConexionBDD conn = new ConexionBDD();
         try{
             Connection c = conn.conectar();
             
-            PreparedStatement verificarStmt = c.prepareStatement("SELECT huehuella FROM somhue WHERE huehombre=?");
+            PreparedStatement verificarStmt = c.prepareStatement("SELECT huehuella FROM somhue WHERE huenombre=?");
             verificarStmt.setString(1,nom);
             ResultSet rs = verificarStmt.executeQuery();
             
@@ -300,7 +300,7 @@ ConexionBDD conn = new ConexionBDD();
             
             while(rs.next()){
                 byte templateBuffer[] = rs.getBytes("huehuella");
-                String nombre = rs.getString("huehombre");
+                String nombre = rs.getString("huenombre");
                 
                 DPFPTemplate referenceTemplate = DPFPGlobal.getTemplateFactory().createTemplate(templateBuffer);
                 
