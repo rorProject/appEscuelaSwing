@@ -33,7 +33,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -125,8 +124,10 @@ public class CapturaHuella extends javax.swing.JFrame {
     }
     public DPFPFeatureSet featuresinscripcion;
     public DPFPFeatureSet featuresverificacion;
-    public DPFPFeatureSet extraerCaracteristicas(DPFPSample sample, DPFPDataPurpose purpose){
-                                DPFPFeatureExtraction extractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
+    public DPFPFeatureSet extraerCaracteristicas(DPFPSample sample, 
+            DPFPDataPurpose purpose){
+            DPFPFeatureExtraction extractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
+            
             try {
                 return extractor.createFeatureSet(sample, purpose);
             }catch(DPFPImageQualityException e){
@@ -145,7 +146,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                     }
                     
             public void EstadoHuellas(){
-                EnviarTexto("Muestra de Huellas Necesarias para Guardar Template " + Reclutador.getFeaturesNeeded());
+                EnviarTexto("Muestra de Huellas Necesarias para Guardar exitosamente " + Reclutador.getFeaturesNeeded());
                 }
     
             public void start(){
@@ -203,7 +204,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                         case TEMPLATE_STATUS_READY: //informe de exito 
                             stop();
                             setTemplate(Reclutador.getTemplate());
-                                EnviarTexto("La plantilla de la huella ha sido creada, ya puede verificar e identificarla);");
+                                EnviarTexto("La plantilla de la huella ha sido creada, ya puede verificar e identificarla");
                     
                                 BtnIdentificar.setEnabled(false);
                                 BtnVerificar.setEnabled(false);
@@ -237,7 +238,7 @@ ConexionBDD conn = new ConexionBDD();
             PreparedStatement guardarStmt = c.prepareStatement("INSERT INTO somhue(huenombre, huehuella) values(?,?)");
             guardarStmt.setString(1,nombre);
             guardarStmt.setBinaryStream(2, datosHuella,tamañoHuella);
-            //eecutar la sentencia
+            //ejecutar la sentencia
             guardarStmt.execute();
             guardarStmt.close();
             JOptionPane.showConfirmDialog(null, "Huella guardada correctamente");
@@ -251,7 +252,7 @@ ConexionBDD conn = new ConexionBDD();
         } finally{
             conn.desconectar();
         }
-        
+        //INSERT INTO somhue (Hora_ingreso) values(?) WHERE huehuella = huella;
         
     }
     public void verificarHuella(String nom){
