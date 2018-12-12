@@ -31,6 +31,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -192,6 +193,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                                 DibujarHuella(image);
                     
                                 BtnVerificar.setEnabled(true);
+                                BtnEgreso.setEnabled(true);
                                 BtnIdentificar.setEnabled(true);
                     
                             }catch(DPFPImageQualityException ex){
@@ -208,6 +210,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                     
                                 BtnIdentificar.setEnabled(false);
                                 BtnVerificar.setEnabled(false);
+                                BtnEgreso.setEnabled(false);
                                 BtnGuardar.setEnabled(true);
                                 BtnGuardar.grabFocus();
                                 break;
@@ -232,15 +235,18 @@ ConexionBDD conn = new ConexionBDD();
         ByteArrayInputStream datosHuella = new ByteArrayInputStream(template.serialize());
         Integer tamañoHuella = template.serialize().length;
         
-        String nombre = JOptionPane.showInputDialog("nombre: ");
+        String DNI = JOptionPane.showInputDialog("DNI: ");
         try{
             Connection c = conn.conectar();
-            PreparedStatement guardarStmt = c.prepareStatement("INSERT INTO somhue(huenombre, huehuella) values(?,?)");
-            guardarStmt.setString(1,nombre);
+            PreparedStatement guardarStmt = c.prepareStatement("INSERT INTO somhue(hueDNI, huehuella) values(?,?)");
+            guardarStmt.setString(1,DNI);
             guardarStmt.setBinaryStream(2, datosHuella,tamañoHuella);
             //ejecutar la sentencia
             guardarStmt.execute();
             guardarStmt.close();
+            PreparedStatement creartabla = c.prepareStatement("CREATE TABLE Horarios"+ DNI +" (horario_ID Integer, somhue_id varchar(8), horaingreso varchar(50), horaegreso varchar(50), PRIMARY KEY (Horario_ID), FOREIGN KEY (somhue_id) REFERENCES somhue(hueDNI))");
+            creartabla.execute();
+            creartabla.close();
             JOptionPane.showConfirmDialog(null, "Huella guardada correctamente");
             conn.desconectar();
             BtnGuardar.setEnabled(false);
@@ -255,12 +261,12 @@ ConexionBDD conn = new ConexionBDD();
         //INSERT INTO somhue (Hora_ingreso) values(?) WHERE huehuella = huella;
         
     }
-    public void verificarHuella(String nom){
+    public void verificarHuella(String DNI){
         try{
             Connection c = conn.conectar();
             
-            PreparedStatement verificarStmt = c.prepareStatement("SELECT huehuella FROM somhue WHERE huenombre=?");
-            verificarStmt.setString(1,nom);
+            PreparedStatement verificarStmt = c.prepareStatement("SELECT huehuella FROM somhue WHERE hueDNI=?");
+            verificarStmt.setString(1,DNI);
             ResultSet rs = verificarStmt.executeQuery();
             
             if (rs.next()){
@@ -272,13 +278,13 @@ ConexionBDD conn = new ConexionBDD();
             DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
             
             if(result.isVerified()){
-                JOptionPane.showConfirmDialog(null, "Las huellas capturadas coinciden con la de "+nom,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showConfirmDialog(null, "Las huellas capturadas coinciden con la de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
                         
             }else{
-                JOptionPane.showConfirmDialog(null, "No corresponde la huella con "+nom, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showConfirmDialog(null, "No corresponde la huella con "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
             }
         }else{
-                JOptionPane.showConfirmDialog(null, "No existe un registro de huella para "+nom, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showConfirmDialog(null, "No existe un registro de huella para "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
                 }
             
     }catch(SQLException ex){
@@ -292,15 +298,21 @@ ConexionBDD conn = new ConexionBDD();
             
 
     }
-    public void identificarHuella() throws IOException{
+    
+    public void identificarHuella() throws IOException{ //INGRESO!!!!!!!!!!!
+        Date horaingreso = new Date();
+        
         try{
+            
             Connection c = conn.conectar();
-            PreparedStatement identificarStmt = c.prepareStatement("SELECT huenombre, huehuella FROM somhue");
+            
+            PreparedStatement identificarStmt = c.prepareStatement("SELECT hueDNI, huehuella FROM somhue");
             ResultSet rs = identificarStmt.executeQuery();
             
             while(rs.next()){
                 byte templateBuffer[] = rs.getBytes("huehuella");
-                String nombre = rs.getString("huenombre");
+                String DNI = rs.getString("hueDNI");
+                
                 
                 DPFPTemplate referenceTemplate = DPFPGlobal.getTemplateFactory().createTemplate(templateBuffer);
                 
@@ -309,7 +321,11 @@ ConexionBDD conn = new ConexionBDD();
                 DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
                 
                 if(result.isVerified()){
-                    JOptionPane.showConfirmDialog(null, "La Huella capturada es de "+nombre,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showConfirmDialog(null, "La Huella capturada es de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                    //intento de guardar la hora!
+                    PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaingreso) values ('"+horaingreso+"','"+DNI+"')");
+                    hora.execute();
+                    hora.close();
                     return;
                 }
             }
@@ -321,6 +337,47 @@ ConexionBDD conn = new ConexionBDD();
         }finally{
             conn.desconectar();
         }
+    }
+    private void EgresoHuella() throws IOException {
+        
+        Date horaegreso = new Date();
+        
+        try{
+            
+            Connection c = conn.conectar();
+            
+            PreparedStatement identificarStmt = c.prepareStatement("SELECT hueDNI, huehuella FROM somhue");
+            ResultSet rs = identificarStmt.executeQuery();
+            
+            while(rs.next()){
+                byte templateBuffer[] = rs.getBytes("huehuella");
+                String DNI = rs.getString("hueDNI");
+                
+                
+                DPFPTemplate referenceTemplate = DPFPGlobal.getTemplateFactory().createTemplate(templateBuffer);
+                
+                setTemplate(referenceTemplate);
+                
+                DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
+                
+                if(result.isVerified()){
+                    JOptionPane.showConfirmDialog(null, "La Huella capturada es de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                    //intento de guardar la hora!
+                    PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaegreso, somhue_id) values ('"+horaegreso+"','"+DNI+"')");
+                    hora.execute();
+                    hora.close();
+                    return;
+                }
+            }
+            JOptionPane.showConfirmDialog(null, "No existe registro que coincida con la huella","Verificacion de huella",JOptionPane.ERROR_MESSAGE);
+            setTemplate(null);
+            
+        }catch (SQLException e){
+            System.err.println("Error al identificar huella"+e.getMessage());
+        }finally{
+            conn.desconectar();
+        }
+        
     }
     /**
      * 
@@ -339,6 +396,7 @@ ConexionBDD conn = new ConexionBDD();
         BtnGuardar = new javax.swing.JButton();
         BtnIdentificar = new javax.swing.JButton();
         BtnSalir = new javax.swing.JButton();
+        BtnEgreso = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new javax.swing.JTextArea();
 
@@ -386,7 +444,7 @@ ConexionBDD conn = new ConexionBDD();
             }
         });
 
-        BtnIdentificar.setText("Identificar");
+        BtnIdentificar.setText("Ingreso");
         BtnIdentificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnIdentificarActionPerformed(evt);
@@ -400,6 +458,13 @@ ConexionBDD conn = new ConexionBDD();
             }
         });
 
+        BtnEgreso.setText("Egreso");
+        BtnEgreso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnEgresoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout PanelOpcLayout = new javax.swing.GroupLayout(PanelOpc);
         PanelOpc.setLayout(PanelOpcLayout);
         PanelOpcLayout.setHorizontalGroup(
@@ -408,8 +473,10 @@ ConexionBDD conn = new ConexionBDD();
                 .addContainerGap()
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BtnIdentificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(BtnVerificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 201, Short.MAX_VALUE)
+                    .addComponent(BtnEgreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(44, 44, 44)
+                .addComponent(BtnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BtnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
                     .addComponent(BtnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -420,12 +487,13 @@ ConexionBDD conn = new ConexionBDD();
             .addGroup(PanelOpcLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BtnVerificar)
-                    .addComponent(BtnGuardar))
+                    .addComponent(BtnGuardar)
+                    .addComponent(BtnEgreso))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnIdentificar)
-                    .addComponent(BtnSalir))
+                    .addComponent(BtnSalir)
+                    .addComponent(BtnVerificar))
                 .addContainerGap())
         );
 
@@ -504,6 +572,7 @@ ConexionBDD conn = new ConexionBDD();
         BtnGuardar.setEnabled(false);
         BtnIdentificar.setEnabled(false);
         BtnVerificar.setEnabled(false);
+        BtnEgreso.setEnabled(false);
         BtnSalir.grabFocus();
     }//GEN-LAST:event_formWindowOpened
 
@@ -511,6 +580,17 @@ ConexionBDD conn = new ConexionBDD();
         // TODO add your handling code here:
         stop();
     }//GEN-LAST:event_formWindowClosing
+
+    private void BtnEgresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEgresoActionPerformed
+        // TODO add your handling code here:
+        try{
+            EgresoHuella();
+            Reclutador.clear();
+        }catch(IOException e){
+            Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, e);
+            
+        }
+    }//GEN-LAST:event_BtnEgresoActionPerformed
 
     
     /**
@@ -549,6 +629,7 @@ ConexionBDD conn = new ConexionBDD();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnEgreso;
     private javax.swing.JButton BtnGuardar;
     private javax.swing.JButton BtnIdentificar;
     private javax.swing.JButton BtnSalir;
@@ -559,4 +640,6 @@ ConexionBDD conn = new ConexionBDD();
     private javax.swing.JPanel panelHuella;
     private javax.swing.JTextArea txtArea;
     // End of variables declaration//GEN-END:variables
+
+    
 }

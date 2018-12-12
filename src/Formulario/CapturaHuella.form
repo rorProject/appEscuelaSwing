@@ -112,9 +112,11 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="BtnIdentificar" max="32767" attributes="0"/>
-                      <Component id="BtnVerificar" max="32767" attributes="0"/>
+                      <Component id="BtnEgreso" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="201" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+                  <Component id="BtnVerificar" min="-2" pref="81" max="-2" attributes="0"/>
+                  <EmptySpace pref="88" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="BtnGuardar" pref="81" max="32767" attributes="0"/>
                       <Component id="BtnSalir" max="32767" attributes="0"/>
@@ -128,13 +130,14 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="BtnVerificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="BtnGuardar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="BtnEgreso" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="42" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="BtnIdentificar" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="BtnSalir" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="BtnVerificar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -160,7 +163,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="BtnIdentificar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Identificar"/>
+            <Property name="text" type="java.lang.String" value="Ingreso"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnIdentificarActionPerformed"/>
@@ -172,6 +175,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnSalirActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="BtnEgreso">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Egreso"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnEgresoActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
