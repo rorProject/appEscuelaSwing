@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Formulario;
+import Formulario.FormularioDatos;
 import BDD.ConexionBDD;
 import com.digitalpersona.onetouch.DPFPDataPurpose;
 import com.digitalpersona.onetouch.DPFPFeatureSet;
@@ -52,6 +53,8 @@ public class CapturaHuella extends javax.swing.JFrame {
      * Nuevo Form CapturaHuella
      */
     public CapturaHuella() {
+        
+        
         try{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());   
         }catch(Exception e){
@@ -235,12 +238,28 @@ ConexionBDD conn = new ConexionBDD();
         ByteArrayInputStream datosHuella = new ByteArrayInputStream(template.serialize());
         Integer tamañoHuella = template.serialize().length;
         
-        String DNI = JOptionPane.showInputDialog("DNI: ");
+        FormularioDatos n = new FormularioDatos();
+        n.setVisible(true);
+        FormularioDatos var = new FormularioDatos();
+        String nombre = var.nombre;
+        String apellido = var.apellido;
+        String direccion = var.direccion;
+        String DNI = var.DNI;
+        String telefono = var.telefono;
+        String email = var.email;
+        
+        //String DNI = JOptionPane.showInputDialog("DNI: ");
         try{
             Connection c = conn.conectar();
-            PreparedStatement guardarStmt = c.prepareStatement("INSERT INTO somhue(hueDNI, huehuella) values(?,?)");
+            PreparedStatement guardarStmt = c.prepareStatement("INSERT INTO somhue(hueDNI, huehuella, nombre, apellido, direccion, telefono, email) values(?,?,?,?,?,?,?)");
             guardarStmt.setString(1,DNI);
             guardarStmt.setBinaryStream(2, datosHuella,tamañoHuella);
+            guardarStmt.setString(3, nombre);
+            guardarStmt.setString(4, apellido);
+            guardarStmt.setString(5, direccion);
+            guardarStmt.setString(6, telefono);
+            guardarStmt.setString(7, email);
+            
             //ejecutar la sentencia
             guardarStmt.execute();
             guardarStmt.close();
