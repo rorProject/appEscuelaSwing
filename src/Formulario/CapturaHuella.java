@@ -32,6 +32,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +64,7 @@ public class CapturaHuella extends javax.swing.JFrame {
             JOptionPane.ERROR_MESSAGE);
         }
         initComponents();
+        this.setLocationRelativeTo(null);
     }
     private DPFPCapture Lector = DPFPGlobal.getCaptureFactory().createCapture();
     private DPFPEnrollment Reclutador = DPFPGlobal.getEnrollmentFactory().createEnrollment();
@@ -315,7 +317,14 @@ ConexionBDD conn = new ConexionBDD();
     }
     
     public void ingresoHuella() throws IOException{
-        Date horaingreso = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String horaingreso = format.format( new Date());
+        
+        SimpleDateFormat tiempo = new SimpleDateFormat("HH:mm:ss");
+        String horario = tiempo.format(new Date());
+        
+        //System.out.println(horaingreso);
+        //Date horaingreso = format.parse("2009-12-31 23:59:59");
         
         try{
             
@@ -336,7 +345,7 @@ ConexionBDD conn = new ConexionBDD();
                 DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
                 
                 if(result.isVerified()){
-                    JOptionPane.showConfirmDialog(null, "La Huella capturada es de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showConfirmDialog(null, "Se agrego el horario de ingreso a: "+DNI,"Horario de ingreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
                     PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaingreso, somhue_id) values ('"+horaingreso+"','"+DNI+"')");
                     hora.execute();
@@ -354,8 +363,11 @@ ConexionBDD conn = new ConexionBDD();
         }
     }
     private void EgresoHuella() throws IOException {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String horaegreso = format.format( new Date());
         
-        Date horaegreso = new Date();
+        SimpleDateFormat tiempo = new SimpleDateFormat("HH:mm:ss");
+        String horario = tiempo.format(new Date());
         
         try{
             
@@ -376,7 +388,7 @@ ConexionBDD conn = new ConexionBDD();
                 DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
                 
                 if(result.isVerified()){
-                    JOptionPane.showConfirmDialog(null, "La Huella capturada es de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showConfirmDialog(null, "Se agrego el horario de egreso a: "+DNI,"Horario de egreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
                     PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaegreso, somhue_id) values ('"+horaegreso+"','"+DNI+"')");
                     hora.execute();
@@ -414,10 +426,12 @@ ConexionBDD conn = new ConexionBDD();
         BtnIdentificar = new javax.swing.JButton();
         BtnEgreso = new javax.swing.JButton();
         BtnAdministrar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(47, 88, 115));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -460,7 +474,7 @@ ConexionBDD conn = new ConexionBDD();
             panelHuellaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHuellaLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(LabelHuella, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(LabelHuella, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(73, 73, 73)
                 .addGroup(panelHuellaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BtnVerificar, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
@@ -474,7 +488,7 @@ ConexionBDD conn = new ConexionBDD();
                 .addComponent(BtnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(BtnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 223, Short.MAX_VALUE))
+                .addGap(0, 199, Short.MAX_VALUE))
         );
 
         PanelOpc.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -482,6 +496,7 @@ ConexionBDD conn = new ConexionBDD();
         BtnGuardar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         BtnGuardar.setText("Guardar");
         BtnGuardar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        BtnGuardar.setPreferredSize(new java.awt.Dimension(71, 71));
         BtnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnGuardarActionPerformed(evt);
@@ -504,6 +519,7 @@ ConexionBDD conn = new ConexionBDD();
         BtnEgreso.setForeground(new java.awt.Color(0, 0, 0));
         BtnEgreso.setText("Egreso");
         BtnEgreso.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, null, new java.awt.Color(0, 0, 0), null, null));
+        BtnEgreso.setPreferredSize(new java.awt.Dimension(82, 31));
         BtnEgreso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnEgresoActionPerformed(evt);
@@ -521,18 +537,24 @@ ConexionBDD conn = new ConexionBDD();
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 0, 8)); // NOI18N
+        jLabel1.setText("DigitalPersona");
+
         javax.swing.GroupLayout PanelOpcLayout = new javax.swing.GroupLayout(PanelOpc);
         PanelOpc.setLayout(PanelOpcLayout);
         PanelOpcLayout.setHorizontalGroup(
             PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelOpcLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtnAdministrar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
+                    .addGroup(PanelOpcLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BtnAdministrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtnGuardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -540,14 +562,19 @@ ConexionBDD conn = new ConexionBDD();
             PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelOpcLayout.createSequentialGroup()
                 .addContainerGap(37, Short.MAX_VALUE)
-                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(PanelOpcLayout.createSequentialGroup()
-                        .addComponent(BtnAdministrar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(BtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(14, 14, 14))
+                        .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1))
+                    .addGroup(PanelOpcLayout.createSequentialGroup()
+                        .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(PanelOpcLayout.createSequentialGroup()
+                                .addComponent(BtnAdministrar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(BtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(26, 26, 26))))
         );
 
         txtArea.setColumns(20);
@@ -562,9 +589,9 @@ ConexionBDD conn = new ConexionBDD();
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panelHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addComponent(PanelOpc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(PanelOpc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelHuella, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -576,7 +603,7 @@ ConexionBDD conn = new ConexionBDD();
                 .addComponent(PanelOpc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+                .addContainerGap())
         );
 
         pack();
@@ -648,7 +675,7 @@ ConexionBDD conn = new ConexionBDD();
 
     private void BtnAdministrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAdministrarActionPerformed
         // TODO add your handling code here:
-        Administrador ventana = new Administrador();
+        Login ventana = new Login();
         ventana.setVisible(true);
         
     }//GEN-LAST:event_BtnAdministrarActionPerformed
@@ -699,6 +726,7 @@ ConexionBDD conn = new ConexionBDD();
     private javax.swing.JButton BtnVerificar;
     private javax.swing.JLabel LabelHuella;
     private javax.swing.JPanel PanelOpc;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelHuella;
     private javax.swing.JTextArea txtArea;

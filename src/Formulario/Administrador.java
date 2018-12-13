@@ -5,16 +5,51 @@
  */
 package Formulario;
 import BDD.ConexionBDD;
+import com.sun.glass.ui.Window;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Eric
  */
 public class Administrador extends javax.swing.JFrame {
+    
+    
+    public void buscar(){
+        ConexionBDD conn = new ConexionBDD();
+        
+        String DNI = txtDNI.getText();
+        cargartabla();
+        try{
+        Connection c = conn.conectar();
+        PreparedStatement recuperardatos = c.prepareStatement("SELECT nombre, apellido, telefono, email FROM somhue WHERE hueDNI='"+DNI+"'");
+        ResultSet rs = recuperardatos.executeQuery();
+        
+        if(rs.next()){
+            String nombre = rs.getString("nombre");
+            String apellido = rs.getString("apellido");
+            String telefono = rs.getString("telefono");
+            String email = rs.getString("email");
+            
+            Labelnombre.setText(nombre);
+            Lableapellido.setText(apellido);
+            Labeltelefono.setText(telefono);
+            Labelemail.setText(email);
+            
+            
+        }
+        
+        }catch(SQLException e){
+            System.err.println("Error al guardar los datos " + e);
+        }finally{
+            conn.desconectar();
+        }
+    } 
+    
 
         
     public void cargartabla(){
@@ -25,18 +60,24 @@ public class Administrador extends javax.swing.JFrame {
                 String Titulo[]={"Hora de ingreso","Hora de egreso"};
                 String registro[]=new String[2];
                 DefaultTableModel modelo = new DefaultTableModel(null,Titulo);
+                
                 PreparedStatement traerhorarios = c.prepareStatement("SELECT horaingreso, horaegreso FROM horarios"+DNI+" WHERE somhue_id='"+DNI+"'");
                 ResultSet rs = traerhorarios.executeQuery();
-        
-            while(rs.next()){
+                
+                    
+                while(rs.next()){
             
-                registro[0]=rs.getString(1);
-                registro[1]=rs.getString(2);
-                modelo.addRow(registro);
-            }
-                Tablehorarios.setModel(modelo);
+                    registro[0]=rs.getString(1);
+                    registro[1]=rs.getString(2);
+                    modelo.addRow(registro);
+                
+                    }
+            
+                    Tablehorarios.setModel(modelo);
+            
             }catch(SQLException e){
-                System.err.println("Error al guardar los datos " + e);
+                System.err.println("Error al recuperar los datos " + e);
+                JOptionPane.showMessageDialog(null, "No existe ningun registro con ese DNI");
             }finally{
                 conn.desconectar();
         }
@@ -47,7 +88,7 @@ public class Administrador extends javax.swing.JFrame {
      */
     public Administrador() {
         initComponents();
-        
+        this.setLocationRelativeTo(null);
         
         
         
@@ -75,13 +116,13 @@ public class Administrador extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tablehorarios = new javax.swing.JTable();
+        BtnRegistrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(573, 566));
 
         txtDNI.setText("Ingrese DNI");
 
-        jButton1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Paviliondv4\\Documents\\NetBeansProjects\\appEscuelaSwing\\resources\\buscador-musical.png")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -154,6 +195,13 @@ public class Administrador extends javax.swing.JFrame {
         Tablehorarios.setFillsViewportHeight(true);
         jScrollPane1.setViewportView(Tablehorarios);
 
+        BtnRegistrar.setText("Registrar");
+        BtnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRegistrarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -162,7 +210,7 @@ public class Administrador extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(62, 62, 62)
                         .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -173,7 +221,8 @@ public class Administrador extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 469, Short.MAX_VALUE)
+                                .addComponent(BtnRegistrar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(BtnSalir))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -215,9 +264,11 @@ public class Administrador extends javax.swing.JFrame {
                         .addComponent(Lableapellido)
                         .addComponent(Labelemail)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BtnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BtnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -225,39 +276,17 @@ public class Administrador extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ConexionBDD conn = new ConexionBDD();
-        
-        String DNI = txtDNI.getText();
-        cargartabla();
-        try{
-        Connection c = conn.conectar();
-        PreparedStatement recuperardatos = c.prepareStatement("SELECT nombre, apellido, telefono, email FROM somhue WHERE hueDNI='"+DNI+"'");
-        ResultSet rs = recuperardatos.executeQuery();
-        
-        if(rs.next()){
-            String nombre = rs.getString("nombre");
-            String apellido = rs.getString("apellido");
-            String telefono = rs.getString("telefono");
-            String email = rs.getString("email");
-            
-            Labelnombre.setText(nombre);
-            Lableapellido.setText(apellido);
-            Labeltelefono.setText(telefono);
-            Labelemail.setText(email);
-            
-            
-        }
-        
-        }catch(SQLException e){
-            System.err.println("Error al guardar los datos " + e);
-        }finally{
-            conn.desconectar();
-        }
+        buscar();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void BtnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSalirActionPerformed
-        System.exit(0);
+        this.setVisible(false);
     }//GEN-LAST:event_BtnSalirActionPerformed
+
+    private void BtnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrarActionPerformed
+        Registro ventana = new Registro();
+        ventana.setVisible(true);
+    }//GEN-LAST:event_BtnRegistrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -295,6 +324,7 @@ public class Administrador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnRegistrar;
     private javax.swing.JButton BtnSalir;
     private javax.swing.JLabel Labelemail;
     private javax.swing.JLabel Labelnombre;
