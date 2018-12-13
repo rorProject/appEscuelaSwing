@@ -31,6 +31,7 @@ public class FormularioDatos extends javax.swing.JFrame {
      * Creates new form FormularioDatos
      */
     public FormularioDatos() {
+        
         initComponents();
         try{
         ConexionBDD conn = new ConexionBDD();
@@ -256,6 +257,7 @@ public class FormularioDatos extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new FormularioDatos().setVisible(true);
+                
             }
         });
     }
