@@ -252,7 +252,7 @@ ConexionBDD conn = new ConexionBDD();
             //ejecutar la sentencia
             guardarStmt.execute();
             guardarStmt.close();
-            PreparedStatement creartabla = c.prepareStatement("CREATE TABLE Horarios"+ DNI +" (horario_ID Integer, somhue_id varchar(8), horaingreso varchar(50), horaegreso varchar(50), PRIMARY KEY (Horario_ID), FOREIGN KEY (somhue_id) REFERENCES somhue(hueDNI))");
+            PreparedStatement creartabla = c.prepareStatement("CREATE TABLE Horarios"+ DNI +" (horario_ID Integer AUTO_INCREMENT, somhue_id varchar(8), horaingreso varchar(50), horaegreso varchar(50), PRIMARY KEY (Horario_ID), FOREIGN KEY (somhue_id) REFERENCES somhue(hueDNI))");
             creartabla.execute();
             creartabla.close();
             JOptionPane.showConfirmDialog(null, "Huella guardada correctamente");
@@ -412,6 +412,7 @@ ConexionBDD conn = new ConexionBDD();
         BtnIdentificar = new javax.swing.JButton();
         BtnSalir = new javax.swing.JButton();
         BtnEgreso = new javax.swing.JButton();
+        BtnAdministrar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new javax.swing.JTextArea();
 
@@ -445,7 +446,7 @@ ConexionBDD conn = new ConexionBDD();
 
         PanelOpc.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Opciones", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
-        BtnVerificar.setText("Verificar");
+        BtnVerificar.setText("?");
         BtnVerificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnVerificarActionPerformed(evt);
@@ -480,6 +481,8 @@ ConexionBDD conn = new ConexionBDD();
             }
         });
 
+        BtnAdministrar.setText("Administrar");
+
         javax.swing.GroupLayout PanelOpcLayout = new javax.swing.GroupLayout(PanelOpc);
         PanelOpc.setLayout(PanelOpcLayout);
         PanelOpcLayout.setHorizontalGroup(
@@ -489,9 +492,13 @@ ConexionBDD conn = new ConexionBDD();
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BtnIdentificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(BtnEgreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(44, 44, 44)
-                .addComponent(BtnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addGap(60, 60, 60)
+                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BtnAdministrar)
+                    .addGroup(PanelOpcLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(BtnVerificar)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BtnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
                     .addComponent(BtnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -503,13 +510,19 @@ ConexionBDD conn = new ConexionBDD();
                 .addContainerGap()
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnGuardar)
-                    .addComponent(BtnEgreso))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BtnIdentificar)
-                    .addComponent(BtnSalir)
-                    .addComponent(BtnVerificar))
-                .addContainerGap())
+                    .addComponent(BtnEgreso)
+                    .addComponent(BtnAdministrar))
+                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelOpcLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                        .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(BtnIdentificar)
+                            .addComponent(BtnSalir))
+                        .addContainerGap())
+                    .addGroup(PanelOpcLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(BtnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         txtArea.setColumns(20);
@@ -644,6 +657,7 @@ ConexionBDD conn = new ConexionBDD();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnAdministrar;
     private javax.swing.JButton BtnEgreso;
     private javax.swing.JButton BtnGuardar;
     private javax.swing.JButton BtnIdentificar;
