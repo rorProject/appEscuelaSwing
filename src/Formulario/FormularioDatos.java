@@ -4,18 +4,23 @@
  * and open the template in the editor.
  */
 package Formulario;
+import BDD.ConexionBDD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Eric
  */
 public class FormularioDatos extends javax.swing.JFrame {
-    public static String nombre;
-    public static String apellido;
-    public static String direccion;
-    public static String DNI;
-    public static String telefono;
-    public static String email;
+    public String nombre;
+    public String apellido;
+    public String direccion;
+    public String telefono;
+    public String email;
     
     
         
@@ -27,6 +32,30 @@ public class FormularioDatos extends javax.swing.JFrame {
      */
     public FormularioDatos() {
         initComponents();
+        try{
+        ConexionBDD conn = new ConexionBDD();
+        Connection c = conn.conectar();
+            PreparedStatement ultimoID = c.prepareStatement("SELECT MAX(id) FROM somhue");
+            ResultSet rs = ultimoID.executeQuery();
+            if(rs.next()){
+              String ID = rs.getString(1);
+              PreparedStatement recuperardni = c.prepareStatement("SELECT hueDNI FROM somhue WHERE id = '"+ID+"'");
+              ResultSet n = recuperardni.executeQuery();
+              if(n.next()){
+                  String DNI = n.getString(1);
+                  LabelDni.setText(DNI);
+                  
+              }
+              
+            }
+            
+        }catch(SQLException e){
+            System.err.println("Error al guardar los datos " + e);
+        }finally{
+            conn.desconectar();
+        }
+        
+        
     }
 
     /**
@@ -41,7 +70,6 @@ public class FormularioDatos extends javax.swing.JFrame {
         txtNombre = new javax.swing.JTextField();
         txtApellido = new javax.swing.JTextField();
         txtDireccion = new javax.swing.JTextField();
-        txtDNI = new javax.swing.JTextField();
         txtTelefono = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -51,6 +79,7 @@ public class FormularioDatos extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         BtnAceptar = new javax.swing.JButton();
+        LabelDni = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Datos de registro");
@@ -89,21 +118,13 @@ public class FormularioDatos extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtDNI)
-                            .addComponent(txtDireccion)))
+                        .addComponent(txtDireccion))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
@@ -111,17 +132,27 @@ public class FormularioDatos extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtTelefono)
-                            .addComponent(txtEmail))))
-                .addContainerGap(150, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtEmail)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                            .addComponent(LabelDni, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addComponent(BtnAceptar)
                 .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(LabelDni))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -135,10 +166,6 @@ public class FormularioDatos extends javax.swing.JFrame {
                     .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -147,7 +174,7 @@ public class FormularioDatos extends javax.swing.JFrame {
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(BtnAceptar)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -156,14 +183,51 @@ public class FormularioDatos extends javax.swing.JFrame {
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreActionPerformed
-
+    ConexionBDD conn = new ConexionBDD();
     private void BtnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAceptarActionPerformed
+        
         nombre = txtNombre.getText();
         apellido = txtApellido.getText();
+        String DNIo = LabelDni.getText();
         direccion = txtDireccion.getText();
-        DNI = txtDNI.getText();
         telefono = txtTelefono.getText();
         email = txtEmail.getText();
+            if(nombre.isEmpty() || apellido.isEmpty() || direccion.isEmpty() || telefono.isEmpty() || email.isEmpty()){
+                BtnAceptar.setEnabled(false);
+            }
+            
+        try{
+            
+            Connection c = conn.conectar();
+            PreparedStatement guardarDatos = c.prepareStatement("INSERT INTO somhue(nombre, apellido, direccion, telefono, email) values(?,?,?,?,?) WHERE somhue.hueDNI = '"+DNIo+"'");
+            guardarDatos.setString(1, nombre);
+            guardarDatos.setString(2, apellido);
+            guardarDatos.setString(3, direccion);
+            guardarDatos.setString(4, telefono);
+            guardarDatos.setString(5, email);
+            
+            JOptionPane.showConfirmDialog(null, "Datos agregados correctamente a: "+DNIo);
+            
+            guardarDatos.execute();
+            guardarDatos.close();
+            
+            
+        }catch(SQLException e){
+            
+            System.err.println("Error al guardar los datos " + e);
+            
+        }finally{
+            conn.desconectar();
+        }
+        
+        
+            
+            
+        this.setVisible(false);
+        CapturaHuella n = new CapturaHuella();
+        n.setVisible(true);
+        
+        
         
         
     }//GEN-LAST:event_BtnAceptarActionPerformed
@@ -205,6 +269,7 @@ public class FormularioDatos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnAceptar;
+    private javax.swing.JLabel LabelDni;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -212,7 +277,6 @@ public class FormularioDatos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JTextField txtApellido;
-    private javax.swing.JTextField txtDNI;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtNombre;

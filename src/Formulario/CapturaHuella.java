@@ -47,7 +47,7 @@ import javax.swing.UIManager;
 
 public class CapturaHuella extends javax.swing.JFrame {
 
-    
+    //public String DNI = "3523";
 
     /**
      * Nuevo Form CapturaHuella
@@ -238,27 +238,16 @@ ConexionBDD conn = new ConexionBDD();
         ByteArrayInputStream datosHuella = new ByteArrayInputStream(template.serialize());
         Integer tamañoHuella = template.serialize().length;
         
-        FormularioDatos n = new FormularioDatos();
-        n.setVisible(true);
-        FormularioDatos var = new FormularioDatos();
-        String nombre = var.nombre;
-        String apellido = var.apellido;
-        String direccion = var.direccion;
-        String DNI = var.DNI;
-        String telefono = var.telefono;
-        String email = var.email;
         
-        //String DNI = JOptionPane.showInputDialog("DNI: ");
+        //FormularioDatos var = new FormularioDatos();
+        String DNI = JOptionPane.showInputDialog("DNI: ");
+        
+        
         try{
             Connection c = conn.conectar();
-            PreparedStatement guardarStmt = c.prepareStatement("INSERT INTO somhue(hueDNI, huehuella, nombre, apellido, direccion, telefono, email) values(?,?,?,?,?,?,?)");
+            PreparedStatement guardarStmt = c.prepareStatement("INSERT INTO somhue(hueDNI, huehuella) values(?,?)");
             guardarStmt.setString(1,DNI);
             guardarStmt.setBinaryStream(2, datosHuella,tamañoHuella);
-            guardarStmt.setString(3, nombre);
-            guardarStmt.setString(4, apellido);
-            guardarStmt.setString(5, direccion);
-            guardarStmt.setString(6, telefono);
-            guardarStmt.setString(7, email);
             
             //ejecutar la sentencia
             guardarStmt.execute();
@@ -267,18 +256,23 @@ ConexionBDD conn = new ConexionBDD();
             creartabla.execute();
             creartabla.close();
             JOptionPane.showConfirmDialog(null, "Huella guardada correctamente");
+                
+                FormularioDatos n = new FormularioDatos();
+                    n.setVisible(true);
+                    this.setVisible(false);
+            
             conn.desconectar();
             BtnGuardar.setEnabled(false);
             BtnVerificar.grabFocus();
         } catch(SQLException ex){
             //indica error en la consola
-            System.err.println("Error al guardar los datos de la Huella" + ex);
+            System.err.println("Error al guardar los datos de la Huella " + ex);
             
         } finally{
             conn.desconectar();
+            
         }
         //INSERT INTO somhue (Hora_ingreso) values(?) WHERE huehuella = huella;
-        
     }
     public void verificarHuella(String DNI){
         try{
@@ -311,6 +305,7 @@ ConexionBDD conn = new ConexionBDD();
         
     }finally{
             conn.desconectar();
+            
             
         }
             
@@ -398,6 +393,7 @@ ConexionBDD conn = new ConexionBDD();
         }
         
     }
+    
     /**
      * 
      * This method is called from within the constructor to initialize the form.
