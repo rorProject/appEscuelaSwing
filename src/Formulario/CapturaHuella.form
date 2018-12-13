@@ -122,7 +122,7 @@
                           <Component id="BtnVerificar" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="56" max="32767" attributes="0"/>
+                  <EmptySpace pref="158" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="BtnGuardar" pref="81" max="32767" attributes="0"/>
                       <Component id="BtnSalir" max="32767" attributes="0"/>
@@ -204,6 +204,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Administrar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnAdministrarActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

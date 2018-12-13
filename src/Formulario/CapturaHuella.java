@@ -55,6 +55,7 @@ public class CapturaHuella extends javax.swing.JFrame {
     public CapturaHuella() {
         
         
+        
         try{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());   
         }catch(Exception e){
@@ -150,7 +151,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                     }
                     
             public void EstadoHuellas(){
-                EnviarTexto("Muestra de Huellas Necesarias para Guardar exitosamente " + Reclutador.getFeaturesNeeded());
+                EnviarTexto("Ingrese su huella " + Reclutador.getFeaturesNeeded()+" veces mas");
                 }
     
             public void start(){
@@ -209,7 +210,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                         case TEMPLATE_STATUS_READY: //informe de exito 
                             stop();
                             setTemplate(Reclutador.getTemplate());
-                                EnviarTexto("La plantilla de la huella ha sido creada, ya puede verificar e identificarla");
+                                EnviarTexto("La plantilla de la huella ha sido creada");
                     
                                 BtnIdentificar.setEnabled(false);
                                 BtnVerificar.setEnabled(false);
@@ -223,7 +224,7 @@ public class CapturaHuella extends javax.swing.JFrame {
                                 stop();
                                 EstadoHuellas();
                                 setTemplate(null);
-                                JOptionPane.showMessageDialog(CapturaHuella.this, "La Plantilla de la Huella no puede ser creada. Repita la operacion");
+                                JOptionPane.showMessageDialog(CapturaHuella.this, "Repita la operacion ha ocurrido un error");
                                 start();
                                 break;
                     }
@@ -291,10 +292,10 @@ ConexionBDD conn = new ConexionBDD();
             DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
             
             if(result.isVerified()){
-                JOptionPane.showConfirmDialog(null, "Las huellas capturadas coinciden con la de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showConfirmDialog(null, "La huella capturada coincide con la de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
                         
             }else{
-                JOptionPane.showConfirmDialog(null, "No corresponde la huella con "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showConfirmDialog(null, "La huella no corresponde con la de  "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
             }
         }else{
                 JOptionPane.showConfirmDialog(null, "No existe un registro de huella para "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
@@ -313,7 +314,7 @@ ConexionBDD conn = new ConexionBDD();
 
     }
     
-    public void identificarHuella() throws IOException{ //INGRESO!!!!!!!!!!!
+    public void ingresoHuella() throws IOException{
         Date horaingreso = new Date();
         
         try{
@@ -482,6 +483,11 @@ ConexionBDD conn = new ConexionBDD();
         });
 
         BtnAdministrar.setText("Administrar");
+        BtnAdministrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAdministrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout PanelOpcLayout = new javax.swing.GroupLayout(PanelOpc);
         PanelOpc.setLayout(PanelOpcLayout);
@@ -498,7 +504,7 @@ ConexionBDD conn = new ConexionBDD();
                     .addGroup(PanelOpcLayout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addComponent(BtnVerificar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BtnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
                     .addComponent(BtnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -559,14 +565,15 @@ ConexionBDD conn = new ConexionBDD();
 
     private void BtnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSalirActionPerformed
         // TODO add your handling code here:
-        System.exit(0);
+        this.setVisible(false);
     }//GEN-LAST:event_BtnSalirActionPerformed
 
     private void BtnVerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVerificarActionPerformed
         // TODO add your handling code here:
-        String nombre = JOptionPane.showInputDialog("Nombre a verificar: ");
-        verificarHuella(nombre);
+        String DNI = JOptionPane.showInputDialog("DNI a verificar: ");
+        verificarHuella(DNI);
         Reclutador.clear();
+        
     }//GEN-LAST:event_BtnVerificarActionPerformed
 
     private void BtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGuardarActionPerformed
@@ -584,7 +591,7 @@ ConexionBDD conn = new ConexionBDD();
     private void BtnIdentificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnIdentificarActionPerformed
         // TODO add your handling code here:
         try{
-            identificarHuella();
+            ingresoHuella();
             Reclutador.clear();
         }catch(IOException e){
             Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, e);
@@ -620,6 +627,14 @@ ConexionBDD conn = new ConexionBDD();
         }
     }//GEN-LAST:event_BtnEgresoActionPerformed
 
+    private void BtnAdministrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAdministrarActionPerformed
+        // TODO add your handling code here:
+        Administrador ventana = new Administrador();
+        ventana.setVisible(true);
+        
+    }//GEN-LAST:event_BtnAdministrarActionPerformed
+
+    
     
     /**
      * @param args the command line arguments
