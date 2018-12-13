@@ -259,7 +259,7 @@ ConexionBDD conn = new ConexionBDD();
                 
                 FormularioDatos n = new FormularioDatos();
                     n.setVisible(true);
-                    this.setVisible(false);
+                    
             
             conn.desconectar();
             BtnGuardar.setEnabled(false);
@@ -272,7 +272,7 @@ ConexionBDD conn = new ConexionBDD();
             conn.desconectar();
             
         }
-        //INSERT INTO somhue (Hora_ingreso) values(?) WHERE huehuella = huella;
+        
     }
     public void verificarHuella(String DNI){
         try{
@@ -337,7 +337,7 @@ ConexionBDD conn = new ConexionBDD();
                 if(result.isVerified()){
                     JOptionPane.showConfirmDialog(null, "La Huella capturada es de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
-                    PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaingreso) values ('"+horaingreso+"','"+DNI+"')");
+                    PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaingreso, somhue_id) values ('"+horaingreso+"','"+DNI+"')");
                     hora.execute();
                     hora.close();
                     return;

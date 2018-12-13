@@ -197,20 +197,13 @@ public class FormularioDatos extends javax.swing.JFrame {
             }
             
         try{
-            
+            //Funcion para guardar los datos!
             Connection c = conn.conectar();
-            PreparedStatement guardarDatos = c.prepareStatement("INSERT INTO somhue(nombre, apellido, direccion, telefono, email) values(?,?,?,?,?) WHERE somhue.hueDNI = '"+DNIo+"'");
-            guardarDatos.setString(1, nombre);
-            guardarDatos.setString(2, apellido);
-            guardarDatos.setString(3, direccion);
-            guardarDatos.setString(4, telefono);
-            guardarDatos.setString(5, email);
-            
-            JOptionPane.showConfirmDialog(null, "Datos agregados correctamente a: "+DNIo);
+            PreparedStatement guardarDatos = c.prepareStatement("UPDATE somhue SET nombre='"+nombre+"',apellido='"+apellido+"',direccion='"+direccion+"',telefono='"+telefono+"',email='"+email+"'WHERE hueDNI='"+DNIo+"'");
             
             guardarDatos.execute();
             guardarDatos.close();
-            
+            JOptionPane.showConfirmDialog(null, "Datos agregados correctamente a: "+DNIo);
             
         }catch(SQLException e){
             
@@ -224,8 +217,8 @@ public class FormularioDatos extends javax.swing.JFrame {
             
             
         this.setVisible(false);
-        CapturaHuella n = new CapturaHuella();
-        n.setVisible(true);
+        
+        
         
         
         
