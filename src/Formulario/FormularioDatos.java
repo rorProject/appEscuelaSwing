@@ -33,6 +33,7 @@ public class FormularioDatos extends javax.swing.JFrame {
     public FormularioDatos() {
         
         initComponents();
+        this.setLocationRelativeTo(null);
         try{
         ConexionBDD conn = new ConexionBDD();
         Connection c = conn.conectar();

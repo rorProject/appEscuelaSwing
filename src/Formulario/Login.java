@@ -44,7 +44,7 @@ public class Login extends javax.swing.JFrame {
             Administrador ventana = new Administrador();
             ventana.setVisible(true);
         }else{
-        JOptionPane.showMessageDialog(null, "No existe el usuario o contraseña brindados");
+        JOptionPane.showMessageDialog(null, "No existe el usuario o contraseña brindados", "Aviso",JOptionPane.INFORMATION_MESSAGE);
         }
         }
         
