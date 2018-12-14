@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -44,7 +45,8 @@ public class Administrador extends javax.swing.JFrame {
         }
         
         }catch(SQLException e){
-            System.err.println("Error al guardar los datos " + e);
+            System.err.println("Error al buscar los datos " + e);
+            
         }finally{
             conn.desconectar();
         }
@@ -77,7 +79,7 @@ public class Administrador extends javax.swing.JFrame {
             
             }catch(SQLException e){
                 System.err.println("Error al recuperar los datos " + e);
-                JOptionPane.showMessageDialog(null, "No existe ningun registro con ese DNI");
+                JOptionPane.showMessageDialog(null, "No existe ningun registro con ese DNI", "Error", JOptionPane.ERROR_MESSAGE);
             }finally{
                 conn.desconectar();
         }

@@ -43,12 +43,11 @@ import javax.swing.UIManager;
 
 /**
  *
- * @author Eric
+ * @author Eric & Axel
  */
 
 public class CapturaHuella extends javax.swing.JFrame {
 
-    //public String DNI = "3523";
 
     /**
      * Nuevo Form CapturaHuella
@@ -258,7 +257,7 @@ ConexionBDD conn = new ConexionBDD();
             PreparedStatement creartabla = c.prepareStatement("CREATE TABLE Horarios"+ DNI +" (horario_ID Integer AUTO_INCREMENT, somhue_id varchar(8), horaingreso varchar(50), horaegreso varchar(50), PRIMARY KEY (Horario_ID), FOREIGN KEY (somhue_id) REFERENCES somhue(hueDNI))");
             creartabla.execute();
             creartabla.close();
-            JOptionPane.showConfirmDialog(null, "Huella guardada correctamente");
+            JOptionPane.showMessageDialog(null, "Huella guardada correctamente");
                 
                 FormularioDatos n = new FormularioDatos();
                     n.setVisible(true);
@@ -294,13 +293,13 @@ ConexionBDD conn = new ConexionBDD();
             DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
             
             if(result.isVerified()){
-                JOptionPane.showConfirmDialog(null, "La huella capturada coincide con la de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La huella capturada coincide con la de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
                         
             }else{
-                JOptionPane.showConfirmDialog(null, "La huella no corresponde con la de  "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La huella no corresponde con la de  "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
             }
         }else{
-                JOptionPane.showConfirmDialog(null, "No existe un registro de huella para "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No existe un registro de huella para "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
                 }
             
     }catch(SQLException ex){
@@ -345,7 +344,7 @@ ConexionBDD conn = new ConexionBDD();
                 DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
                 
                 if(result.isVerified()){
-                    JOptionPane.showConfirmDialog(null, "Se agrego el horario de ingreso a: "+DNI,"Horario de ingreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Se agrego el horario de ingreso a: "+DNI,"Horario de ingreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
                     PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaingreso, somhue_id) values ('"+horaingreso+"','"+DNI+"')");
                     hora.execute();
@@ -353,7 +352,7 @@ ConexionBDD conn = new ConexionBDD();
                     return;
                 }
             }
-            JOptionPane.showConfirmDialog(null, "No existe registro que coincida con la huella","Verificacion de huella",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No existe registro que coincida con la huella","Verificacion de huella",JOptionPane.ERROR_MESSAGE);
             setTemplate(null);
             
         }catch (SQLException e){
@@ -388,7 +387,7 @@ ConexionBDD conn = new ConexionBDD();
                 DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
                 
                 if(result.isVerified()){
-                    JOptionPane.showConfirmDialog(null, "Se agrego el horario de egreso a: "+DNI,"Horario de egreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Se agrego el horario de egreso a: "+DNI,"Horario de egreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
                     PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaegreso, somhue_id) values ('"+horaegreso+"','"+DNI+"')");
                     hora.execute();
@@ -396,7 +395,7 @@ ConexionBDD conn = new ConexionBDD();
                     return;
                 }
             }
-            JOptionPane.showConfirmDialog(null, "No existe registro que coincida con la huella","Verificacion de huella",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No existe registro que coincida con la huella","Verificacion de huella",JOptionPane.ERROR_MESSAGE);
             setTemplate(null);
             
         }catch (SQLException e){

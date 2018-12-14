@@ -43,14 +43,14 @@ public class Recuperar extends javax.swing.JFrame {
                 recuperar.execute();
                 recuperar.close();
                     
-                JOptionPane.showMessageDialog(null, "La contraseña fue actualizada con exito!");
+                JOptionPane.showMessageDialog(null, "La contraseña fue actualizada con exito!","Exito!",JOptionPane.INFORMATION_MESSAGE);
         
                     }else{
-                        JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
+                        JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden","Aviso",JOptionPane.ERROR_MESSAGE);
                     }
                 }catch(SQLException e){
                     System.err.println("Ocurrio un error "+e);
-                    JOptionPane.showMessageDialog(null, "No existe el ususario o email ingresado");
+                    JOptionPane.showMessageDialog(null, "No existe el ususario o email ingresado","Aviso",JOptionPane.INFORMATION_MESSAGE);
                 }finally{
                     conn.desconectar();
             }

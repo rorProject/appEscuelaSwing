@@ -42,10 +42,10 @@ public class Registro extends javax.swing.JFrame {
             PreparedStatement registro = c.prepareStatement("INSERT INTO administrador(usuario, email, contraseña) values('"+usuario+"','"+email+"','"+pass2+"')");
             registro.execute();
             registro.close();
-            JOptionPane.showMessageDialog(null, "El usuario "+usuario+" ha sido creado con exito!");
+            JOptionPane.showMessageDialog(null, "El usuario "+usuario+" ha sido creado con exito!","Usuario Nuevo", JOptionPane.INFORMATION_MESSAGE);
             this.setVisible(false);
         }else{
-            JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden, intente nuevamente");
+            JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden, intente nuevamente", "Error", JOptionPane.WARNING_MESSAGE);
         }
         }catch(SQLException e){
             System.err.println("Ocurrio un error "+e );
