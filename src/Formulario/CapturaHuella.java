@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package Formulario;
-import Formulario.FormularioDatos;
 import BDD.ConexionBDD;
 import com.digitalpersona.onetouch.DPFPDataPurpose;
 import com.digitalpersona.onetouch.DPFPFeatureSet;
