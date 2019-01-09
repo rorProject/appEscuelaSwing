@@ -43,7 +43,7 @@ import javax.swing.UIManager;
 
 /**
  *
- * @author Eric & Axel
+ * @author Eric Haas & Axel Erpen
  */
 
 public class CapturaHuella extends javax.swing.JFrame {
@@ -254,9 +254,6 @@ ConexionBDD conn = new ConexionBDD();
             //ejecutar la sentencia
             guardarStmt.execute();
             guardarStmt.close();
-            PreparedStatement creartabla = c.prepareStatement("CREATE TABLE Horarios"+ DNI +" (horario_ID Integer AUTO_INCREMENT, somhue_id varchar(8), horaingreso varchar(50), horaegreso varchar(50), PRIMARY KEY (Horario_ID), FOREIGN KEY (somhue_id) REFERENCES somhue(hueDNI))");
-            creartabla.execute();
-            creartabla.close();
             JOptionPane.showMessageDialog(null, "Huella guardada correctamente");
                 
                 FormularioDatos n = new FormularioDatos();
@@ -269,6 +266,7 @@ ConexionBDD conn = new ConexionBDD();
         } catch(SQLException ex){
             //indica error en la consola
             System.err.println("Error al guardar los datos de la Huella " + ex);
+            JOptionPane.showMessageDialog(null, "El DNI ingresado ya esta registrado.");
             
         } finally{
             conn.desconectar();
@@ -316,25 +314,25 @@ ConexionBDD conn = new ConexionBDD();
     }
     
     public void ingresoHuella() throws IOException{
+        
+        //cambiar este boton para automatizar la entrada y la salida!
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String horaingreso = format.format( new Date());
         
         SimpleDateFormat tiempo = new SimpleDateFormat("HH:mm:ss");
         String horario = tiempo.format(new Date());
         
-        //System.out.println(horaingreso);
-        //Date horaingreso = format.parse("2009-12-31 23:59:59");
-        
         try{
             
             Connection c = conn.conectar();
             
-            PreparedStatement identificarStmt = c.prepareStatement("SELECT hueDNI, huehuella FROM somhue");
+            PreparedStatement identificarStmt = c.prepareStatement("SELECT hueDNI, huehuella, nombre FROM somhue");
             ResultSet rs = identificarStmt.executeQuery();
             
             while(rs.next()){
                 byte templateBuffer[] = rs.getBytes("huehuella");
                 String DNI = rs.getString("hueDNI");
+                String nombre = rs.getString("nombre");
                 
                 
                 DPFPTemplate referenceTemplate = DPFPGlobal.getTemplateFactory().createTemplate(templateBuffer);
@@ -346,7 +344,7 @@ ConexionBDD conn = new ConexionBDD();
                 if(result.isVerified()){
                     JOptionPane.showMessageDialog(null, "Se agrego el horario de ingreso a: "+DNI,"Horario de ingreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
-                    PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaingreso, somhue_id) values ('"+horaingreso+"','"+DNI+"')");
+                    PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaingreso) values ('"+DNI+"','"+nombre+"','"+horaingreso+"')");
                     hora.execute();
                     hora.close();
                     return;
@@ -372,12 +370,13 @@ ConexionBDD conn = new ConexionBDD();
             
             Connection c = conn.conectar();
             
-            PreparedStatement identificarStmt = c.prepareStatement("SELECT hueDNI, huehuella FROM somhue");
+            PreparedStatement identificarStmt = c.prepareStatement("SELECT hueDNI, huehuella, nombre FROM somhue");
             ResultSet rs = identificarStmt.executeQuery();
             
             while(rs.next()){
                 byte templateBuffer[] = rs.getBytes("huehuella");
                 String DNI = rs.getString("hueDNI");
+                String nombre = rs.getString("nombre");
                 
                 
                 DPFPTemplate referenceTemplate = DPFPGlobal.getTemplateFactory().createTemplate(templateBuffer);
@@ -389,7 +388,7 @@ ConexionBDD conn = new ConexionBDD();
                 if(result.isVerified()){
                     JOptionPane.showMessageDialog(null, "Se agrego el horario de egreso a: "+DNI,"Horario de egreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
-                    PreparedStatement hora = c.prepareStatement("INSERT INTO Horarios"+ DNI +" (horaegreso, somhue_id) values ('"+horaegreso+"','"+DNI+"')");
+                    PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaegreso) values ('"+DNI+"','"+nombre+"','"+horaegreso+"')");
                     hora.execute();
                     hora.close();
                     return;
@@ -424,7 +423,6 @@ ConexionBDD conn = new ConexionBDD();
         BtnGuardar = new javax.swing.JButton();
         BtnIdentificar = new javax.swing.JButton();
         BtnEgreso = new javax.swing.JButton();
-        BtnAdministrar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new javax.swing.JTextArea();
@@ -525,17 +523,6 @@ ConexionBDD conn = new ConexionBDD();
             }
         });
 
-        BtnAdministrar.setBackground(new java.awt.Color(0, 120, 255));
-        BtnAdministrar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        BtnAdministrar.setForeground(new java.awt.Color(0, 0, 0));
-        BtnAdministrar.setText("Administrar");
-        BtnAdministrar.setBorder(null);
-        BtnAdministrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnAdministrarActionPerformed(evt);
-            }
-        });
-
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 8)); // NOI18N
         jLabel1.setText("DigitalPersona");
 
@@ -547,12 +534,10 @@ ConexionBDD conn = new ConexionBDD();
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PanelOpcLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(BtnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtnAdministrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BtnGuardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
@@ -563,17 +548,14 @@ ConexionBDD conn = new ConexionBDD();
                 .addContainerGap(37, Short.MAX_VALUE)
                 .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(PanelOpcLayout.createSequentialGroup()
-                        .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(BtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1))
                     .addGroup(PanelOpcLayout.createSequentialGroup()
-                        .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(PanelOpcLayout.createSequentialGroup()
-                                .addComponent(BtnAdministrar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(BtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(26, 26, 26))))
+                        .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47))))
         );
 
         txtArea.setColumns(20);
@@ -672,13 +654,6 @@ ConexionBDD conn = new ConexionBDD();
         }
     }//GEN-LAST:event_BtnEgresoActionPerformed
 
-    private void BtnAdministrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAdministrarActionPerformed
-        // TODO add your handling code here:
-        Login ventana = new Login();
-        ventana.setVisible(true);
-        
-    }//GEN-LAST:event_BtnAdministrarActionPerformed
-
     
     
     /**
@@ -717,7 +692,6 @@ ConexionBDD conn = new ConexionBDD();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnAdministrar;
     private javax.swing.JButton BtnEgreso;
     private javax.swing.JButton BtnGuardar;
     private javax.swing.JButton BtnIdentificar;
