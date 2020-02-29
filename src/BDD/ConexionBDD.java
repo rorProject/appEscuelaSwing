@@ -14,12 +14,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 public class ConexionBDD {
-    /*
-        CONFIGURAR LA CONEXION A LA BDD..
-        USAR POSTGRESS..
-        INSTALAR PG EN LA PC DE LA ESCUELA
     
-    */
     
     public String puerto="3306";
     public String nomservidor="localhost";

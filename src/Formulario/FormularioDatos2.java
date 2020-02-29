@@ -16,17 +16,17 @@ import java.sql.SQLException;
  *
  * @author Eric
  */
-public class FormularioDatos extends javax.swing.JPanel {
+public class FormularioDatos2 extends javax.swing.JFrame {
 
     /**
-     * Creates new form FormularioDatos
+     * Creates new form FormularioDatos2
      */
     ConexionBDD conn = new ConexionBDD();
     public void guardarDatos(){
         
         String nombre = TxtNombre.getText();
         String apellido = TxtApellido.getText();
-        String DNIo = LabelDni.getText();
+        String DNIo = DniResultado.getText();
         String direccion = TxtDireccion.getText();
         String telefono = TxtTelefono.getText();
         String email = TxtEmail.getText();
@@ -57,9 +57,14 @@ public class FormularioDatos extends javax.swing.JPanel {
     
     
     }
-    public FormularioDatos() {
+    public FormularioDatos2() {
         initComponents();
-        this.setLocation(null);
+        try{
+            this.setLocationRelativeTo(null);
+        }catch(Exception e){
+            System.out.println("Error en el controlador: "+e);
+        }
+        
         try{
         
         Connection c = conn.conectar();
@@ -71,7 +76,7 @@ public class FormularioDatos extends javax.swing.JPanel {
               ResultSet n = recuperardni.executeQuery();
               if(n.next()){
                   String DNI = n.getString(1);
-                  LabelDni.setText(DNI);
+                  DniResultado.setText(DNI);
                   
               }
               
@@ -82,7 +87,6 @@ public class FormularioDatos extends javax.swing.JPanel {
         }finally{
             conn.desconectar();
         }
-        
         
     }
 
@@ -95,33 +99,55 @@ public class FormularioDatos extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        LabelDni = new javax.swing.JLabel();
-        LabelNombre = new javax.swing.JLabel();
-        LabelApellido = new javax.swing.JLabel();
-        LabelDireccion = new javax.swing.JLabel();
-        LabelTelefono = new javax.swing.JLabel();
-        LabelEmail = new javax.swing.JLabel();
-        BtnSalir = new javax.swing.JButton();
-        BtnAceptar = new javax.swing.JButton();
+        Dni = new javax.swing.JLabel();
+        Nombre = new javax.swing.JLabel();
+        Apellido = new javax.swing.JLabel();
+        Direccion = new javax.swing.JLabel();
+        Telefono = new javax.swing.JLabel();
+        Email = new javax.swing.JLabel();
+        DniResultado = new javax.swing.JLabel();
         TxtNombre = new javax.swing.JTextField();
         TxtApellido = new javax.swing.JTextField();
         TxtDireccion = new javax.swing.JTextField();
         TxtTelefono = new javax.swing.JTextField();
         TxtEmail = new javax.swing.JTextField();
-        LabelDNI = new javax.swing.JLabel();
+        BtnSalir = new javax.swing.JButton();
+        BtnAceptar = new javax.swing.JButton();
         LabelAviso = new javax.swing.JLabel();
 
-        LabelDni.setText("DNI");
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        LabelNombre.setText("Nombre");
+        Dni.setText("DNI: ");
 
-        LabelApellido.setText("Apellido");
+        Nombre.setText("Nombre: ");
 
-        LabelDireccion.setText("Direccion");
+        Apellido.setText("Apellido: ");
 
-        LabelTelefono.setText("Telefono");
+        Direccion.setText("Direccion: ");
 
-        LabelEmail.setText("Email");
+        Telefono.setText("Telefono: ");
+
+        Email.setText("Email: ");
+
+        TxtNombre.setToolTipText("Nombre");
+
+        TxtApellido.setToolTipText("Apellido");
+
+        TxtDireccion.setToolTipText("Direccion");
+        TxtDireccion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtDireccionActionPerformed(evt);
+            }
+        });
+
+        TxtTelefono.setToolTipText("Telefono");
+        TxtTelefono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtTelefonoActionPerformed(evt);
+            }
+        });
+
+        TxtEmail.setToolTipText("Email");
 
         BtnSalir.setText("Salir");
         BtnSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -137,53 +163,34 @@ public class FormularioDatos extends javax.swing.JPanel {
             }
         });
 
-        TxtNombre.setText("Nombre");
-
-        TxtApellido.setText("Apellido");
-
-        TxtDireccion.setText("Direccion");
-
-        TxtTelefono.setText("Telefono");
-
-        TxtEmail.setText("Email");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelApellido)
-                        .addGap(57, 57, 57)
-                        .addComponent(TxtApellido, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelDireccion)
-                        .addGap(48, 48, 48)
-                        .addComponent(TxtDireccion))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelTelefono)
-                        .addGap(53, 53, 53)
-                        .addComponent(TxtTelefono))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelNombre)
-                        .addGap(57, 57, 57)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(LabelDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(TxtNombre)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelEmail)
+                            .addComponent(Dni)
+                            .addComponent(Nombre)
+                            .addComponent(Apellido)
+                            .addComponent(Direccion)
+                            .addComponent(Telefono)
+                            .addComponent(Email))
                         .addGap(71, 71, 71)
-                        .addComponent(TxtEmail))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelDni)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TxtNombre)
+                            .addComponent(TxtApellido)
+                            .addComponent(TxtDireccion)
+                            .addComponent(TxtTelefono)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(DniResultado)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(TxtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(BtnSalir)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(LabelAviso)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(BtnAceptar)))
@@ -192,38 +199,48 @@ public class FormularioDatos extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LabelDni)
-                    .addComponent(LabelDNI))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LabelNombre)
+                    .addComponent(Dni)
+                    .addComponent(DniResultado))
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Nombre)
                     .addComponent(TxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LabelApellido)
+                    .addComponent(Apellido)
                     .addComponent(TxtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LabelDireccion)
+                    .addComponent(Direccion)
                     .addComponent(TxtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LabelTelefono)
+                    .addComponent(Telefono)
                     .addComponent(TxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LabelEmail)
+                    .addComponent(Email)
                     .addComponent(TxtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnSalir)
                     .addComponent(BtnAceptar)
                     .addComponent(LabelAviso))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void TxtDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtDireccionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtDireccionActionPerformed
+
+    private void TxtTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtTelefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtTelefonoActionPerformed
 
     private void BtnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAceptarActionPerformed
         // TODO add your handling code here:
@@ -235,18 +252,52 @@ public class FormularioDatos extends javax.swing.JPanel {
         this.setVisible(false);
     }//GEN-LAST:event_BtnSalirActionPerformed
 
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FormularioDatos2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FormularioDatos2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FormularioDatos2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FormularioDatos2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new FormularioDatos2().setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Apellido;
     private javax.swing.JButton BtnAceptar;
     private javax.swing.JButton BtnSalir;
-    private javax.swing.JLabel LabelApellido;
+    private javax.swing.JLabel Direccion;
+    private javax.swing.JLabel Dni;
+    private javax.swing.JLabel DniResultado;
+    private javax.swing.JLabel Email;
     private javax.swing.JLabel LabelAviso;
-    private javax.swing.JLabel LabelDNI;
-    private javax.swing.JLabel LabelDireccion;
-    private javax.swing.JLabel LabelDni;
-    private javax.swing.JLabel LabelEmail;
-    private javax.swing.JLabel LabelNombre;
-    private javax.swing.JLabel LabelTelefono;
+    private javax.swing.JLabel Nombre;
+    private javax.swing.JLabel Telefono;
     private javax.swing.JTextField TxtApellido;
     private javax.swing.JTextField TxtDireccion;
     private javax.swing.JTextField TxtEmail;

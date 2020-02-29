@@ -39,10 +39,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
 /**
  *
- * @author Eric Haas & Axel Erpen
+ * @author Eric Haas
  */
 
 public class CapturaHuella extends javax.swing.JFrame {
@@ -58,7 +57,7 @@ public class CapturaHuella extends javax.swing.JFrame {
         try{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());   
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "no se puede modificar el tema visual","LookandFeel invalido",
+            JOptionPane.showMessageDialog(null, "No se puede modificar el tema visual","LookandFeel invalido",
             JOptionPane.ERROR_MESSAGE);
         }
         initComponents();
@@ -199,7 +198,6 @@ public class CapturaHuella extends javax.swing.JFrame {
                                 BtnVerificar.setEnabled(true);
                                 BtnEgreso.setEnabled(true);
                                 BtnIdentificar.setEnabled(true);
-                    
                             }catch(DPFPImageQualityException ex){
                                 System.err.println("Error: " + ex.getMessage());
                             }finally{
@@ -240,7 +238,7 @@ ConexionBDD conn = new ConexionBDD();
         Integer tamañoHuella = template.serialize().length;
         
         
-        //FormularioDatos var = new FormularioDatos();
+        
         String DNI = JOptionPane.showInputDialog("DNI: ");
         
         
@@ -255,9 +253,15 @@ ConexionBDD conn = new ConexionBDD();
             guardarStmt.close();
             JOptionPane.showMessageDialog(null, "Huella guardada correctamente");
                 
-                FormularioDatos n = new FormularioDatos();
-                    n.setVisible(true);
-                    
+            
+            FormularioDatos2 n = new FormularioDatos2();
+            System.out.println(n.isVisible());
+            n.setVisible(true);
+            n.setAlwaysOnTop(true);
+            System.out.println(n.isVisible());
+//            n.grabFocus();
+//            n.setEnabled(true);
+            
             
             conn.desconectar();
             BtnGuardar.setEnabled(false);
@@ -289,27 +293,22 @@ ConexionBDD conn = new ConexionBDD();
             
             DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
             
-            if(result.isVerified()){
-                JOptionPane.showMessageDialog(null, "La huella capturada coincide con la de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
+                if(result.isVerified()){
+                    JOptionPane.showMessageDialog(null, "La huella capturada coincide con la de "+DNI,"Verificacion de Huella", JOptionPane.INFORMATION_MESSAGE);
                         
-            }else{
-                JOptionPane.showMessageDialog(null, "La huella no corresponde con la de  "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
-            }
-        }else{
-                JOptionPane.showMessageDialog(null, "No existe un registro de huella para "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
+                }else{
+                    JOptionPane.showMessageDialog(null, "La huella no corresponde con la de  "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
                 }
+            }else{
+                JOptionPane.showMessageDialog(null, "No existe un registro de huella para "+DNI, "Verificacion de Huella", JOptionPane.ERROR_MESSAGE);
+            }
             
-    }catch(SQLException ex){
+        }catch(SQLException ex){
         System.err.println("Error al verificar los datos de la huella" + ex.getMessage());
         
-    }finally{
-            conn.desconectar();
-            
-            
+        }finally{
+            conn.desconectar();   
         }
-            
-            
-
     }
     
     public void ingresoHuella() throws IOException{
@@ -321,6 +320,10 @@ ConexionBDD conn = new ConexionBDD();
         SimpleDateFormat tiempo = new SimpleDateFormat("HH:mm:ss");
         String horario = tiempo.format(new Date());
         
+        String observacion = JOptionPane.showInputDialog("Observacion: ");
+        if(observacion == null){
+            observacion = "";
+        }
         try{
             
             Connection c = conn.conectar();
@@ -341,11 +344,20 @@ ConexionBDD conn = new ConexionBDD();
                 DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
                 
                 if(result.isVerified()){
-                    JOptionPane.showMessageDialog(null, "Se agrego el horario de ingreso a: "+DNI,"Horario de ingreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
                     //intento de guardar la hora!
-                    PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaingreso) values ('"+DNI+"','"+nombre+"','"+horaingreso+"')");
-                    hora.execute();
-                    hora.close();
+                    if(observacion.isEmpty()){
+                        JOptionPane.showMessageDialog(null, "Se agrego el horario de ingreso a: "+DNI,"Horario de ingreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
+                        PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaingreso) values ('"+DNI+"','"+nombre+"','"+horaingreso+"')");
+                        hora.execute();
+                        hora.close();
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Se agrego el horario de ingreso y la observacion a: "+DNI,"Horario de ingreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
+                        PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaingreso, observaciones) values ('"+DNI+"','"+nombre+"','"+horaingreso+"','"+observacion+"')");
+                        hora.execute();
+                        hora.close();
+                    }
+                    
+                    
                     return;
                 }
             }
@@ -364,6 +376,11 @@ ConexionBDD conn = new ConexionBDD();
         
         SimpleDateFormat tiempo = new SimpleDateFormat("HH:mm:ss");
         String horario = tiempo.format(new Date());
+        //agrego la opcion de agregar una observacion desde el usuario
+        String observacion = JOptionPane.showInputDialog("Observacion: ");
+        if(observacion == null){
+            observacion = "";
+        }
         
         try{
             
@@ -385,11 +402,20 @@ ConexionBDD conn = new ConexionBDD();
                 DPFPVerificationResult result = Verificador.verify(featuresverificacion, getTemplate());
                 
                 if(result.isVerified()){
-                    JOptionPane.showMessageDialog(null, "Se agrego el horario de egreso a: "+DNI,"Horario de egreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
-                    //intento de guardar la hora!
-                    PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaegreso) values ('"+DNI+"','"+nombre+"','"+horaegreso+"')");
-                    hora.execute();
-                    hora.close();
+                    if(observacion.isEmpty()){
+                        JOptionPane.showMessageDialog(null, "Se agrego el horario de egreso a: "+DNI,"Horario de egreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
+                        //intento de guardar la hora!
+                        PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaegreso) values ('"+DNI+"','"+nombre+"','"+horaegreso+"')");
+                        hora.execute();
+                        hora.close();
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Se agrego el horario de egreso y la observacion a: "+DNI,"Horario de egreso: "+horario, JOptionPane.INFORMATION_MESSAGE);
+                        //intento de guardar la hora!
+                        PreparedStatement hora = c.prepareStatement("INSERT INTO horarios (dni, nombre, horaegreso, observaciones) values ('"+DNI+"','"+nombre+"','"+horaegreso+"','"+observacion+"')");
+                        hora.execute();
+                        hora.close();
+                    }
+                    
                     return;
                 }
             }
@@ -479,12 +505,12 @@ ConexionBDD conn = new ConexionBDD();
         );
         panelHuellaLayout.setVerticalGroup(
             panelHuellaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(LabelHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panelHuellaLayout.createSequentialGroup()
                 .addComponent(BtnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(BtnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 199, Short.MAX_VALUE))
+                .addGap(0, 197, Short.MAX_VALUE))
+            .addComponent(LabelHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         PanelOpc.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -530,31 +556,29 @@ ConexionBDD conn = new ConexionBDD();
         PanelOpcLayout.setHorizontalGroup(
             PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelOpcLayout.createSequentialGroup()
-                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(24, 24, 24)
+                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(PanelOpcLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(PanelOpcLayout.createSequentialGroup()
                         .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(BtnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BtnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(20, 20, 20))
         );
         PanelOpcLayout.setVerticalGroup(
             PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelOpcLayout.createSequentialGroup()
-                .addContainerGap(37, Short.MAX_VALUE)
-                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(PanelOpcLayout.createSequentialGroup()
-                        .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1))
-                    .addGroup(PanelOpcLayout.createSequentialGroup()
-                        .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(47, 47, 47))))
+                .addContainerGap(31, Short.MAX_VALUE)
+                .addGroup(PanelOpcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BtnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtnEgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 22, Short.MAX_VALUE)
+                .addComponent(jLabel1))
         );
 
         txtArea.setColumns(20);
@@ -566,24 +590,24 @@ ConexionBDD conn = new ConexionBDD();
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(PanelOpc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelHuella, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(PanelOpc, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addComponent(panelHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelHuella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addComponent(panelHuella, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelOpc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
